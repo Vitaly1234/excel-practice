@@ -44,7 +44,10 @@ module.exports = {
   devtool: isDev ? 'source-map' : false,
   devServer: {
     port: 3000,
+    contentBase: [path.resolve(__dirname, 'src')],
+    inline: true,
     hot: isDev,
+    watchContentBase: true,
   },
   target: isDev ? 'web' : 'browserslist',
   plugins: [
