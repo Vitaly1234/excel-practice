@@ -14,10 +14,11 @@ import {resizeHandler} from '@/components/table/table.resize';
 export class Table extends ExcelComponent {
   static className = 'excel__table';
 
-  constructor($root) {
+  constructor($root, options) {
     super($root, {
       name: 'Table',
-      listeners: ['mousedown', 'keydown'],
+      listeners: ['mousedown', 'keydown', 'input'],
+      ...options,
     });
   }
 
@@ -31,8 +32,18 @@ export class Table extends ExcelComponent {
     super.init();
 
     this.selection = new TableSelection();
-    const $cell = this.$root.find('[data-id="0:0"]');
+    this.selectCell(this.$root.find('[data-id="0:0"]'));
+
+    this.$subscribe('formula:input', (text) =>
+      this.selection.selected.text(text)
+    );
+
+    this.$subscribe('formula:done', () => this.selection.selected.focus());
+  }
+
+  selectCell($cell) {
     this.selection.select($cell);
+    this.$emit('table:select', $cell);
   }
 
   onMousedown(event) {
@@ -69,7 +80,11 @@ export class Table extends ExcelComponent {
       event.preventDefault();
       const id = this.selection.selected.id(true);
       const $next = this.$root.find(nextSelector(key, id));
-      this.selection.select($next);
+      this.selectCell($next);
     }
+  }
+
+  onInput(event) {
+    this.$emit('table:input', $(event.target));
   }
 }
