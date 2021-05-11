@@ -3,31 +3,55 @@ const CODES = {
   Z: 90,
 };
 
-function toCell(row) {
+const DEFAULT_WIDTH = 120;
+const DEFAULT_HEIGHT = 24;
+
+function getWidth(state, index) {
+  return (state[index] || DEFAULT_WIDTH) + 'px';
+}
+
+function getHeight(state, index) {
+  return (state[index] || DEFAULT_HEIGHT) + 'px';
+}
+
+function toCell(state, row) {
   return function(_, col) {
+    const width = getWidth(state, col);
     return `
     <div
       class="cell"
       contenteditable
       data-col="${col}"
       data-type="cell"
-      data-id="${row}:${col}"></div>
+      data-id="${row}:${col}"
+      style="width: ${width}"
+      ></div>
   `;
   };
 }
 
-function toColumn(content, index) {
+function toColumn({content, index, width}) {
   return `
-    <div class="column" data-type="resizable" data-col="${index}">
+    <div
+      class="column"
+      data-type="resizable"
+      data-col="${index}"
+      style="width: ${width}">
       ${content}
       <div class="col-resize" data-resize="col"></div>
     </div>
   `;
 }
 
-function createRow(content, rowNumber = '') {
+function createRow(content, rowNumber = '', state = {}) {
+  const height = getHeight(state, rowNumber);
   return `
-    <div class="row" data-type="resizable">
+    <div
+      class="row"
+      data-type="resizable"
+      data-row="${rowNumber}"
+      style="height: ${height}"
+      >
       <div class="row-info">
         ${rowNumber}
         ${rowNumber ? '<div class="row-resize" data-resize="row"></div>' : ''}
@@ -41,17 +65,35 @@ function toChar(_, index) {
   return String.fromCharCode(CODES.A + index);
 }
 
-export function createTable(rowsCount = 15) {
+function withWidthFrom(state) {
+  return function(col, index) {
+    return {
+      content: col,
+      index,
+      width: getWidth(state.colState, index),
+    };
+  };
+}
+
+export function createTable(rowsCount = 15, state = {}) {
   const colsCount = CODES.Z - CODES.A + 1;
   const rows = [];
 
-  const cols = new Array(colsCount).fill('').map(toChar).map(toColumn).join('');
+  const cols = new Array(colsCount)
+      .fill('')
+      .map(toChar)
+      .map(withWidthFrom(state))
+      .map(toColumn)
+      .join('');
 
   rows.push(createRow(cols));
 
   for (let row = 0; row < rowsCount; row++) {
-    const cells = new Array(colsCount).fill('').map(toCell(row)).join('');
-    rows.push(createRow(cells, row + 1));
+    const cells = new Array(colsCount)
+        .fill('')
+        .map(toCell(state.colState, row))
+        .join('');
+    rows.push(createRow(cells, row + 1, state.rowState));
   }
 
   return rows.join('');

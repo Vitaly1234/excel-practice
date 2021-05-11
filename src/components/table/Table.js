@@ -1,3 +1,5 @@
+import * as actions from '@/redux/actions';
+
 import {
   getMatrix,
   isCell,
@@ -23,7 +25,7 @@ export class Table extends ExcelComponent {
   }
 
   toHTML() {
-    return createTable(100);
+    return createTable(100, this.store.getState());
   }
 
   prepare() {}
@@ -41,14 +43,23 @@ export class Table extends ExcelComponent {
     this.$subscribe('formula:done', () => this.selection.selected.focus());
   }
 
-  selectCell($cell) {
-    this.selection.select($cell);
+  selectCell($cell, isCtrlDown = false) {
+    this.selection.select($cell, isCtrlDown);
     this.$emit('table:select', $cell);
+  }
+
+  async resizeTable(event) {
+    try {
+      const data = await resizeHandler(this.$root, event);
+      this.$dispatch(actions.tableResize(data));
+    } catch (e) {
+      console.warn('Resize error', e.message);
+    }
   }
 
   onMousedown(event) {
     if (shouldResize(event)) {
-      resizeHandler(this.$root, event);
+      this.resizeTable(event);
     } else if (isCell(event)) {
       const $target = $(event.target);
       const isCtrlDown = event.ctrlKey;
@@ -59,7 +70,7 @@ export class Table extends ExcelComponent {
 
         this.selection.selectGroup($cells, isCtrlDown);
       } else {
-        this.selection.select($target, isCtrlDown);
+        this.selectCell($target, isCtrlDown);
       }
     }
   }
