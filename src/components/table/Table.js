@@ -36,9 +36,10 @@ export class Table extends ExcelComponent {
     this.selection = new TableSelection();
     this.selectCell(this.$root.find('[data-id="0:0"]'));
 
-    this.$subscribe('formula:input', (text) =>
-      this.selection.selected.text(text)
-    );
+    this.$subscribe('formula:input', (text) => {
+      this.selection.selected.text(text);
+      this.updateTextInStore(text);
+    });
 
     this.$subscribe('formula:done', () => this.selection.selected.focus());
   }
@@ -95,7 +96,16 @@ export class Table extends ExcelComponent {
     }
   }
 
+  updateTextInStore(value) {
+    this.$dispatch(
+        actions.cahngeText({
+          id: this.selection.selected.id(),
+          value,
+        })
+    );
+  }
+
   onInput(event) {
-    this.$emit('table:input', $(event.target));
+    this.updateTextInStore($(event.target).text());
   }
 }
