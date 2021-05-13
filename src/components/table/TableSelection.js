@@ -21,6 +21,10 @@ export class TableSelection {
     this.group = [];
   }
 
+  get selectedIds() {
+    return this.group.map(($el) => $el.id());
+  }
+
   selectGroup($group = [], isUnion) {
     if (!isUnion) {
       this.clear();
@@ -29,5 +33,9 @@ export class TableSelection {
       this.group = [...this.group, ...$group];
     }
     this.group.forEach(($el) => $el.addClass(TableSelection.className));
+  }
+
+  applyStyle(style) {
+    this.group.forEach(($el) => $el.css(style));
   }
 }
