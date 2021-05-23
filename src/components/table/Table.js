@@ -12,6 +12,7 @@ import {ExcelComponent} from '@core/ExcelComponent';
 import {TableSelection} from '@/components/table/TableSelection';
 import {createTable} from '@/components/table/table.template';
 import {defaultStyles} from '@/constants';
+import {parse} from '@core/parse';
 import {resizeHandler} from '@/components/table/table.resize';
 
 export class Table extends ExcelComponent {
@@ -37,9 +38,9 @@ export class Table extends ExcelComponent {
     this.selection = new TableSelection();
     this.selectCell(this.$root.find('[data-id="0:0"]'));
 
-    this.$subscribe('formula:input', (text) => {
-      this.selection.selected.text(text);
-      this.updateTextInStore(text);
+    this.$subscribe('formula:input', (value) => {
+      this.selection.selected.attr('data-value', value).text(parse(value));
+      this.updateTextInStore(value);
     });
 
     this.$subscribe('formula:done', () => this.selection.selected.focus());
