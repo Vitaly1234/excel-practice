@@ -2,33 +2,33 @@ import {
   APPLY_STYLE,
   CHANGE_STYLES,
   CHANGE_TEXT,
+  CHANGE_TITLE,
   TABLE_RESIZE,
 } from '@/redux/types';
 
 export function tableResize(data) {
-  return {
-    type: TABLE_RESIZE,
-    data,
-  };
+  return getAction(TABLE_RESIZE, data);
 }
 
 export function cahngeText(data) {
-  return {
-    type: CHANGE_TEXT,
-    data,
-  };
+  return getAction(CHANGE_TEXT, data);
 }
 
 export function changeStyles(data) {
-  return {
-    type: CHANGE_STYLES,
-    data,
-  };
+  return getAction(CHANGE_STYLES, data);
 }
 
 export function applyStyle(data) {
+  return getAction(APPLY_STYLE, data);
+}
+
+export function changeTitle(data) {
+  return getAction(CHANGE_TITLE, data);
+}
+
+function getAction(type, data) {
   return {
-    type: APPLY_STYLE,
+    type,
     data,
   };
 }
