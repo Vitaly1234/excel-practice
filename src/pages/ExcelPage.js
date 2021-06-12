@@ -6,7 +6,7 @@ import {Header} from '@/components/header/Header';
 import {Page} from '@core/Page';
 import {Table} from '@/components/table/Table';
 import {Toolbar} from '@/components/toolbar/Toolbar';
-import {createStore} from '@core/createStore';
+import {createStore} from '@core/store/createStore';
 import {normalizeInitialState} from '@/redux/initialState';
 import {rootReducer} from '@/redux/rootReducer';
 

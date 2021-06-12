@@ -4,7 +4,8 @@
   "description": "JavaSctript Excel",
   "main": "webpack.config.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "test:watch": "ject --watch",
     "start": "cross-env NODE_ENV=development webpack serve --open",
     "build": "cross-env NODE_ENV=production webpack --mode production"
   },
@@ -37,6 +38,7 @@
     "eslint-config-google": "^0.14.0",
     "eslint-loader": "^4.0.2",
     "html-webpack-plugin": "^5.3.1",
+    "jest": "^27.0.4",
     "mini-css-extract-plugin": "^1.4.0",
     "prettier-eslint": "^12.0.0",
     "sass": "^1.32.8",
