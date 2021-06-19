@@ -1,7 +1,8 @@
 /**
  * @jest-environment jsdom
  */
-import {Page} from '../Page';
+
+import {Page} from '../page/Page';
 import {Router} from './Router';
 
 class DashboardPage extends Page {
